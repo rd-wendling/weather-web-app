@@ -1,6 +1,8 @@
 #%%
 import requests
+import streamlit as st
 
+#%%
 def get_ip():
     '''
     Gets the ip address of the user
@@ -12,6 +14,8 @@ def get_ip():
         ip = 'Could not fetch IP'
     return ip
 
+#%%
+@st.cache_data
 def get_location(ip_address):
     '''
     Uses the user's ip to get basic location data.

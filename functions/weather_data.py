@@ -1,9 +1,10 @@
 #%%
 import requests
 import pandas as pd
-
+import streamlit as st
 
 #%%
+@st.cache_data
 def astronomy_get(api_key, location, date):
     base_url = f"http://api.weatherapi.com/v1/astronomy.json"
 
@@ -18,8 +19,11 @@ def astronomy_get(api_key, location, date):
     if response.status_code == 200:
         try:
             data = response.json()
-            df = pd.DataFrame(data['astronomy'])  
+            data = data['astronomy']
+
+            df = pd.DataFrame(data)  
             df.reset_index(drop=False, inplace=True)
+
             return df
         except Exception as e:
             print(f"Error processing JSON")
@@ -29,6 +33,7 @@ def astronomy_get(api_key, location, date):
 
 
 #%%
+@st.cache_data
 def current_weather_get(api_key, location):
     base_url = f"http://api.weatherapi.com/v1/current.json"
 
@@ -47,12 +52,18 @@ def current_weather_get(api_key, location):
 
             keys_to_remove = ['condition', 'air_quality']
             filtered_data = {key: value for key, value in data.items() if key not in keys_to_remove}
+            df_current = pd.DataFrame(filtered_data, index=[0])  
 
-            df = pd.DataFrame(filtered_data, index=[0])  
-            return df
+            condition_data = data['condition']
+            df_condition = pd.DataFrame(condition_data, index=[0])  
+
+            air_quality_data = data['air_quality']
+            df_aqi = pd.DataFrame(air_quality_data, index=[0])  
+            return df_current, df_condition, df_aqi
         
         except Exception as e:
             print(f"Error processing JSON")
-            return pd.DataFrame()
+            empty_df = pd.DataFrame()
+            return empty_df, empty_df, empty_df
     else:
         print(f"Error fetching data: {response.status_code}")
