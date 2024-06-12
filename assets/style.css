@@ -1,24 +1,90 @@
 
-/** Current Weather Container **/
-div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div.st-emotion-cache-0.e1f1d6gn0 {
-    background-color: #5a7ec5;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    margin-left: 35%;
-    margin-right: 35%;
+/* Media query for screen size */
+@media (min-width: 1155px) {
+    .error-message {
+        display: none;
+    }
+    .content {
+        display: block;
+    }
 }
 
+/** Heading 1 **/
+h1 {
+    color: rgb(51, 51, 51);
+    text-align: left;
+    padding: 0px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgb(197, 197, 197);
+}
 
+/** Heading 2 **/
 h2 {
     color: white;
     text-align: center;
     justify-content: center;
     align-items: center;
     padding: 0px;
+    margin-left: 1.4%;
+    margin-bottom: -17%;
 }
+
+/** Heading 3 **/
+h3 {
+    color: white;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    margin-left: 1.4%;
+    margin-bottom: -17%;
+}
+
+/** Current Weather Container **/
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div.st-emotion-cache-ocqkz7.e1f1d6gn5 > div:nth-child(1){
+    background-color: #5a7ec5;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    margin-left: 10% ;
+    max-width: 39.5%;
+}
+
+/** Astro Container **/
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div.st-emotion-cache-ocqkz7.e1f1d6gn5 > div:nth-child(2) {
+    background-color: #5a7ec5;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    margin: 0 ;
+    max-width: 39.5%;
+}
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div.st-emotion-cache-0.e1f1d6gn0 {
+    background-color: #5a7ec5;
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    margin: 0 auto;
+    width: 80%;
+}
+

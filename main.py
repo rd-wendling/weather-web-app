@@ -4,6 +4,7 @@ import functions.user_info as fu
 import functions.weather_data as fw
 import os
 from datetime import datetime
+import base64
 
 # Get Weather Data API Key
 weather_api_key = os.environ.get('weather_api_key')
@@ -13,51 +14,244 @@ st.set_page_config(layout="wide")
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+# Handle Small Screens
+st.write(f"<p class='error-message'>Display  Error: Screen size is too small!</p>", unsafe_allow_html=True)
+
 # Get the user's IP address and location
 user_ip = fu.get_ip()
+
+# Get the user's location
 city, region, zipcode, country = fu.get_location(user_ip)
-
-# Fetch Current Weather data for user's location
 location = f'{city}, {region}, {zipcode}, {country}'
-weather_df, condition_df, aqi_df = fw.current_weather_get(weather_api_key, location)
 
-# App's Current Weather Section
-with st.container():
-    location_text = f"## {city}, {region}"
+# App Heading
+if zipcode == 'Unknown':
+    location = st.text_input("Unable to detect location, please enter zipcode:")
+    st.write("")
+
+if location:
+    location_text = f"# Location detected as: {city}, {region}"
     st.write(location_text)
-    st.write("Current Conditions")
 
-    img_path = f"https:{condition_df['icon'][0]}"
-    st.markdown(
-        f"""
-        <div style='display: flex; justify-content: center;'>
-            <img src='{img_path}' alt='Weather Icon'>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Fetch Current Weather data for user's location
+    weather_df, condition_df, aqi_df = fw.current_weather_get(weather_api_key, location)
 
-    st.markdown(f"<p style='padding: 0px;'><b>{condition_df['text'][0]}</b></p>", unsafe_allow_html=True)
-    st.markdown(f"""<p style='padding: 0px;'>
-                    <b>Temperature:</b> {weather_df['temp_f'][0]}°F <br>
-                    <b>Humidity:</b> {weather_df['humidity'][0]}% <br>
-                    <b>Wind Speed:</b> {weather_df['wind_mph'][0]} mph
-                  </p>""", unsafe_allow_html=True)
+    # Fetch Astronomy data
+    date = datetime.now().strftime('%Y-%m-%d')
+    astro_df = fw.astronomy_get(weather_api_key, location, date)
+
+    # Fetch 7-Day Forecast
+    forecast_df = fw.forecast_weather_get(weather_api_key, location, 7)
 
 
 
+    current_col, astro_col = st.columns([1, 1])
+    # App's Current Weather Section
+    with current_col:
+        st.write("## Today's Outlook")
+        st.markdown(f"<p style='padding-top: 5px; margin-top:25px;'>Current Conditions</p>", unsafe_allow_html=True)
+
+        img_path = f"https:{condition_df['icon'][0]}"
+        st.markdown(
+            f"""
+            <div style='display: flex; justify-content: center; padding: 0px; margin-top:-10pt;'>
+                <img src='{img_path}' alt='Weather Icon'>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(f"<p style='padding: 0px; margin-bottom:10px; margin-top:-5pt;'><b>{condition_df['text'][0]}</b></p>", unsafe_allow_html=True)
+
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            st.markdown(f"""<p style='padding: 0px; text-align:left'>
+                            <b>Temperature:</b> {weather_df['temp_f'][0]} °F <br>
+                            <b>Humidity:</b> {weather_df['humidity'][0]}% <br>
+                            <b>Wind Speed:</b> {weather_df['wind_mph'][0]} mph
+                        </p>""", unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"""<p style='padding: 0px; text-align:left; position:absolute; right:0; top:0'>
+                            <b>Feels Like:</b> {weather_df['feelslike_f'][0]} °F <br>
+                            <b>Visibility:</b> {weather_df['vis_miles'][0]} miles <br>
+                            <b>Wind Gusts:</b> {weather_df['gust_mph'][0]} mph
+                        </p>""", unsafe_allow_html=True)
+
+    with astro_col:
+        st.write("## Astronomy")
+
+        # Get todays moon phase and path to right icon
+        moon_phase = astro_df[astro_df['index']=='moon_phase']['astro'].reset_index(drop=True)
+        st.markdown(f"<p style='padding-top: 5px; margin-top:25px;'>{moon_phase[0]}</p>", unsafe_allow_html=True)
+        img_path = fw.get_moon_icon_path(moon_phase[0])
+
+        # Read the image file as bytes
+        with open(img_path, "rb") as img_file:
+            img_bytes = img_file.read()
+
+        # Encode the image bytes as base64
+        img_base64 = base64.b64encode(img_bytes).decode()
+
+        st.markdown(
+            f"""
+            <div class="image-container">
+                <img src="data:image/png;base64,{img_base64}" alt="Image" style="width: 35px;">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        #st.markdown(f"<a href='https://www.flaticon.com/free-icons/moon' title='moon icons'>Moon icons created by Freepik - Flaticon</a>", unsafe_allow_html=True)
+
+        sunrise = astro_df[astro_df['index']=='sunrise']['astro'].reset_index(drop=True)
+        sunset = astro_df[astro_df['index']=='sunset']['astro'].reset_index(drop=True)
+        moonrise = astro_df[astro_df['index']=='moonrise']['astro'].reset_index(drop=True)
+        moonset = astro_df[astro_df['index']=='moonset']['astro'].reset_index(drop=True)
+        moon_illum = astro_df[astro_df['index']=='moon_illumination']['astro'].reset_index(drop=True)
+
+        st.markdown(f"""<p style='padding-top: 10px;'><b>Moon Illumination:</b> {moon_illum[0]}%</p>""", unsafe_allow_html=True)
+
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            st.markdown(f"""<p style='padding-top: 5px; text-align:left'>
+                            <b>Sun Rise:</b> {sunrise[0]}<br>
+                            <b>Sun Set:</b> {sunset[0]}
+                        </p>""", unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"""<p style='padding-top: 5px; text-align:left; position:absolute; right:0; top:0'>
+                            <b>Moon Rise:</b> {moonrise[0]}<br>
+                            <b>Moon Set:</b> {moonset[0]}
+                        </p>""", unsafe_allow_html=True)
+
+    with st.container():
+        st.write("### 7-Day Forecast")
+        metric, day1, day2, day3, day4, day5, day6, day7 = st.columns(8)
+        with metric:
+            st.markdown(f"""<p style='text-align: left; padding-top: 40px;'><b> </b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b> </b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 60px;'><b>High</b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b>Low</b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b>Chance of Rain</b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b>Max Wind Speed</b></p>""", unsafe_allow_html=True)
+
+        with day1:
+            col_index = 0
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+
+        with day2:
+            col_index = 1
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+
+        with day3:
+            col_index = 2
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+
+        with day4:
+            col_index = 3
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+
+        with day5:
+            col_index = 4
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+
+        with day6:
+            col_index = 5
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+
+        with day7:
+            col_index = 6
+            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
+            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
+            st.markdown(
+                f"""
+                <div style='padding: 0px; margin-top:-15px;'>
+                    <img src='{img_path}' alt='Weather Icon'>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
 
 
 
-
-# # Fetch Astronomy data for user's location
-# location = f'{city}, {region}, {zipcode}, {country}'
-# date = datetime.now().strftime('%Y-%m-%d')
-# df = fw.astronomy_get(weather_api_key, location, date)
-
-# st.dataframe(df, hide_index=True)
-
-
-st.dataframe(weather_df, hide_index=True)
-st.dataframe(condition_df, hide_index=True)
-st.dataframe(aqi_df, hide_index=True)
