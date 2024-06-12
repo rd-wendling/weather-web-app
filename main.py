@@ -101,7 +101,6 @@ if location:
             unsafe_allow_html=True
         )
 
-
         sunrise = astro_df[astro_df['index']=='sunrise']['astro'].reset_index(drop=True)
         sunset = astro_df[astro_df['index']=='sunset']['astro'].reset_index(drop=True)
         moonrise = astro_df[astro_df['index']=='moonrise']['astro'].reset_index(drop=True)
@@ -122,6 +121,7 @@ if location:
                             <b>Moon Set:</b> {moonset[0]}
                         </p>""", unsafe_allow_html=True)
 
+    # App's Forecast Section
     with st.container():
         st.write("### 7-Day Forecast")
         metric, day1, day2, day3, day4, day5, day6, day7 = st.columns(8)
