@@ -2,6 +2,7 @@
 import streamlit as st
 import functions.user_info as fu
 import functions.weather_data as fw
+import functions.streamlit_helpers as fs
 import os
 from datetime import datetime
 import base64
@@ -24,7 +25,7 @@ user_ip = fu.get_ip()
 city, region, zipcode, country = fu.get_location(user_ip)
 location = f'{city}, {region}, {zipcode}, {country}'
 
-# App Heading
+# Handle Unkown Locations/IPs
 if zipcode == 'Unknown':
     location = st.text_input("Unable to detect location, please enter zipcode:")
     st.write("")
@@ -44,9 +45,8 @@ if location:
     forecast_df = fw.forecast_weather_get(weather_api_key, location, 7)
 
 
-
+    # App's Current Weather and Astro Section
     current_col, astro_col = st.columns([1, 1])
-    # App's Current Weather Section
     with current_col:
         st.write("## Today's Outlook")
         st.markdown(f"<p style='padding-top: 5px; margin-top:25px;'>Current Conditions</p>", unsafe_allow_html=True)
@@ -101,7 +101,6 @@ if location:
             unsafe_allow_html=True
         )
 
-        #st.markdown(f"<a href='https://www.flaticon.com/free-icons/moon' title='moon icons'>Moon icons created by Freepik - Flaticon</a>", unsafe_allow_html=True)
 
         sunrise = astro_df[astro_df['index']=='sunrise']['astro'].reset_index(drop=True)
         sunset = astro_df[astro_df['index']=='sunset']['astro'].reset_index(drop=True)
@@ -127,8 +126,8 @@ if location:
         st.write("### 7-Day Forecast")
         metric, day1, day2, day3, day4, day5, day6, day7 = st.columns(8)
         with metric:
-            st.markdown(f"""<p style='text-align: left; padding-top: 40px;'><b> </b></p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b> </b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 40px;'><b></b></p>""", unsafe_allow_html=True)
+            st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b></b></p>""", unsafe_allow_html=True)
             st.markdown(f"""<p style='text-align: left; padding-top: 60px;'><b>High</b></p>""", unsafe_allow_html=True)
             st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b>Low</b></p>""", unsafe_allow_html=True)
             st.markdown(f"""<p style='text-align: left; padding-top: 0px;'><b>Chance of Rain</b></p>""", unsafe_allow_html=True)
@@ -136,122 +135,25 @@ if location:
 
         with day1:
             col_index = 0
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
-
+            fs.forecast_column(col_index, forecast_df)
         with day2:
             col_index = 1
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
-
+            fs.forecast_column(col_index, forecast_df)
         with day3:
             col_index = 2
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
-
+            fs.forecast_column(col_index, forecast_df)
         with day4:
             col_index = 3
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
-
+            fs.forecast_column(col_index, forecast_df)
         with day5:
             col_index = 4
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
-
+            fs.forecast_column(col_index, forecast_df)
         with day6:
             col_index = 5
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
-
+            fs.forecast_column(col_index, forecast_df)
         with day7:
             col_index = 6
-            st.markdown(f"""<p style='padding-top: 40px;'><b>{forecast_df.columns[col_index]}</b></p>""", unsafe_allow_html=True)
-            img_path = f"https:{forecast_df.iloc[-2, col_index]}"
-            st.markdown(
-                f"""
-                <div style='padding: 0px; margin-top:-15px;'>
-                    <img src='{img_path}' alt='Weather Icon'>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[1, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[3, col_index]} °F</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[-7, col_index]}%</p>""", unsafe_allow_html=True)
-            st.markdown(f"""<p style='padding-top: 0px;'>{forecast_df.iloc[6, col_index]} mph</p>""", unsafe_allow_html=True)
+            fs.forecast_column(col_index, forecast_df)
 
 
 
