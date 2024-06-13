@@ -29,7 +29,7 @@ To run this dashboard locally, follow these steps:
 
 3. **Run the Application**
     ```sh
-    streamlit run app.py
+    streamlit run main.py
     ```
 
 Once the application is running, open your web browser and navigate to `http://localhost:8501` to view the dashboard.
