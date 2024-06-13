@@ -6,7 +6,7 @@ Welcome to my Weather Web App project! This project is a web-based application b
 Access the published web app [here.](https://rwend-weather-app.streamlit.app/)
 
 ## Screenshots
-Here is a preview of the web if you have not access the published site yet:
+Here is a preview of the web app if you have not access the published site yet:
 ![Screenshot1](assets/screenshots/app-screenshot.png)
 
 ## Known Issues
