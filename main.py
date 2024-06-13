@@ -30,7 +30,7 @@ st.write(location_text)
 
 col1, col2 = st.columns([2,1])
 with col1:
-    location_overide = st.text_input("Overide detected location with zipcode input:")
+    location_overide = st.text_input("**Overide detected location with zipcode input:**")
 
 if location_overide:
     location = location_overide
