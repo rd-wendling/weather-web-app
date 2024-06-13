@@ -2,6 +2,11 @@
 
 Welcome to my Weather Web App project! This project is a web-based application built with [Streamlit](https://streamlit.io/), using free API's to detect a user's location, and provide weather data based on that location.
 
+## Published Location
+Access the published web app [here](https://rwend-weather-app.streamlit.app/)
+
+## Known Issues
+The published version is obtaining the IP address of the server it is hosted on. Streamlit has disabled client-side IP logging for privacy reasons, I included a user input location override but to get the auto-location detection working you will need to install and run the app locally.
 
 ## Local Installation
 To run this dashboard locally, follow these steps:
