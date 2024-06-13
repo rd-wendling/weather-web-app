@@ -29,12 +29,12 @@ location_text = f"# Location detected as: {city}, {region}"
 st.write(location_text)
 
 st.write('')
-with st.container():
+with st.container(border=False):
     location_overide = st.text_input("Overide detected location with zipcode input:")
 
 if location_overide:
     location = location_overide
-    
+
 # Fetch Current Weather data for user's location
 weather_df, condition_df, aqi_df = fw.current_weather_get(weather_api_key, location)
 
