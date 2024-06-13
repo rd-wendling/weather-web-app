@@ -102,3 +102,15 @@ h3 {
     margin: 0 auto;
     width: 100%;
 }
+
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div:nth-child(5) > div.st-emotion-cache-1r6slb0.e1f1d6gn3{
+    background-color: #ffffff;
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0px 0px #ffffff;
+    display: inline-block;
+    margin: 0 auto;
+    width: 100%;
+}
