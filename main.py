@@ -3,12 +3,11 @@ import streamlit as st
 import functions.user_info as fu
 import functions.weather_data as fw
 import functions.streamlit_helpers as fs
-import os
 from datetime import datetime
 import base64
 
 # Get Weather Data API Key
-weather_api_key = os.environ.get('weather_api_key')
+weather_api_key = st.secrets["weather_api_key"]
 
 # Setup app
 st.set_page_config(layout="wide")
