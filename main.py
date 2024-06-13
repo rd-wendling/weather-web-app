@@ -28,9 +28,7 @@ location = f'{city}, {region}, {zipcode}, {country}'
 location_text = f"# Location detected as: {city}, {region}"
 st.write(location_text)
 
-st.write('')
-with st.container(border=False):
-    location_overide = st.text_input("Overide detected location with zipcode input:")
+location_overide = st.text_input("Overide detected location with zipcode input:")
 
 if location_overide:
     location = location_overide
