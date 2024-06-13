@@ -28,7 +28,7 @@ location = f'{city}, {region}, {zipcode}, {country}'
 location_text = f"# Location detected as: {city}, {region}"
 st.write(location_text)
 
-col = st.columns(1)
+col = st.columns([1])
 with col:
     location_overide = st.text_input("Overide detected location with zipcode input:")
 
