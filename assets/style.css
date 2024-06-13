@@ -45,10 +45,6 @@ h3 {
     margin-bottom: -17%;
 }
 
-/** Location Override Container **/
-#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div:nth-child(6) > div > div > div > div > label > div {
-    color: white;
-}
 
 /** Current Weather Container **/
 #root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div.st-emotion-cache-ocqkz7.e1f1d6gn5 > div:nth-child(1){
@@ -92,6 +88,22 @@ h3 {
     text-align: center;
     justify-content: center;
     color: white;
+    margin: 0 auto;
+    width: 80%;
+}
+
+/** Location Override Container **/
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div:nth-child(6){
+    background-color: #ffffff;
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    text-align: center;
+    justify-content: center;
+    color: rgb(51, 51, 51);
     margin: 0 auto;
     width: 80%;
 }
