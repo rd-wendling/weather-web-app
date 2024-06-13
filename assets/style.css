@@ -19,6 +19,9 @@ h1 {
     margin-bottom: 40px;
     border-bottom: 1px solid rgb(197, 197, 197);
 }
+#root > div:nth-child(1) > div.withScreencast > div > div > div > section > div.block-container.st-emotion-cache-1jicfl2.ea3mdgi5 > div > div > div > div:nth-child(4){
+    padding: 0px;
+}
 
 /** Heading 2 **/
 h2 {
