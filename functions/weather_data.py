@@ -111,5 +111,5 @@ def forecast_weather_get(api_key, location, days_out):
 @st.cache_data
 def get_moon_icon_path(moon_phase):
     moon_phase = moon_phase.lower().replace(' ', '_')
-    img_path = f'assets\moon_icons\{moon_phase}.png'
+    img_path = f'assets/moon_icons/{moon_phase}.png'
     return img_path
