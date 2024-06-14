@@ -33,7 +33,6 @@ def astronomy_get(api_key, location, date):
 
 
 #%%
-@st.cache_data
 def current_weather_get(api_key, location):
     base_url = f"http://api.weatherapi.com/v1/current.json"
 
@@ -70,7 +69,6 @@ def current_weather_get(api_key, location):
 
 
 #%%
-@st.cache_data
 def forecast_weather_get(api_key, location, days_out):
     base_url = f"http://api.weatherapi.com/v1/forecast.json"
 
