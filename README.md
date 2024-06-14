@@ -1,5 +1,4 @@
 # Weather Web App
-
 Welcome to my Weather Web App project! This project is a web-based application built with [Streamlit](https://streamlit.io/), using free API's to detect a user's location, and provide weather data based on that location.
 
 ## Published Location
