@@ -16,8 +16,8 @@ To run this dashboard locally, follow these steps:
 
 1. **Clone the Repository**
     ```sh
-    git clone https://github.com/rd-wendling/weather.git
-    cd weather
+    git clone https://github.com/rd-wendling/weather-web-app.git
+    cd weather-web-app
     ```
 
 2. **Install Dependencies**
